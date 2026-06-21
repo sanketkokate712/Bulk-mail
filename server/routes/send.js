@@ -4,11 +4,12 @@ const nodemailer = require('nodemailer');
 const auth = require('../middleware/auth');
 
 // Setup Nodemailer transporter using Gmail SSL (port 465)
-// Render and most cloud providers block port 587, but 465 works fine
+// family:4 forces IPv4 — Render free tier has no IPv6 outbound support
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
   port: parseInt(process.env.SMTP_PORT) || 465,
-  secure: true, // true for 465, false for 587
+  secure: true,
+  family: 4, // Force IPv4 — critical for Render free tier
   auth: {
     user: process.env.SMTP_USER || '',
     pass: process.env.SMTP_PASS || ''
