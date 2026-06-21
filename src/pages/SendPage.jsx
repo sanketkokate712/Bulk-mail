@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { PlayIcon, PauseIcon, StopIcon, CheckIcon, XIcon, RefreshIcon, AlertIcon, ClockIcon } from '../components/Icons';
 import { mergeTemplate } from '../data/mockData';
 import { createCampaign, updateCampaignStatus } from '../api/db';
-import { sendEmail, mergeTemplate as realMergeTemplate } from '../services/gmail';
+import { sendEmail, mergeTemplate as realMergeTemplate, wakeUpServer } from '../services/gmail';
 import { PROVIDER_LIMITS } from '../data/mockData';
 import './SendPage.css';
 
@@ -75,6 +75,9 @@ export default function SendPage({ recipients, template, headers, user, onComple
     isRunningRef.current = true;
     if (!startTimeRef.current) startTimeRef.current = Date.now();
 
+    // Wake up Render server first (free tier sleeps after 15 min)
+    await wakeUpServer((msg) => console.log('[Wake]', msg));
+
     let cid = campaignId;
     if (!cid) {
       try {
@@ -82,7 +85,6 @@ export default function SendPage({ recipients, template, headers, user, onComple
         setCampaignId(cid);
       } catch (err) {
         console.warn("Could not create campaign in DB (non-fatal):", err);
-        // Not fatal — emails will still send, just won't be saved to DB
       }
     }
 
