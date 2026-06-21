@@ -22,7 +22,8 @@ export async function sendEmail({ to, subject, body }) {
   }
 
   try {
-    const response = await fetch('http://localhost:5000/api/send', {
+    const apiBase = import.meta.env.VITE_API_URL || 'https://bulkmailer-wxyb.onrender.com';
+    const response = await fetch(`${apiBase}/api/send`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
