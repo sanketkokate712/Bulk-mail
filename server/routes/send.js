@@ -3,15 +3,19 @@ const router = express.Router();
 const nodemailer = require('nodemailer');
 const auth = require('../middleware/auth');
 
-// Setup Nodemailer transporter
-// You will configure these variables in server/.env
+// Setup Nodemailer transporter using Gmail SSL (port 465)
+// Render and most cloud providers block port 587, but 465 works fine
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.sendgrid.net',
-  port: process.env.SMTP_PORT || 587,
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: parseInt(process.env.SMTP_PORT) || 465,
+  secure: true, // true for 465, false for 587
   auth: {
-    user: process.env.SMTP_USER || 'apikey',
+    user: process.env.SMTP_USER || '',
     pass: process.env.SMTP_PASS || ''
-  }
+  },
+  connectionTimeout: 10000,
+  greetingTimeout: 5000,
+  socketTimeout: 10000,
 });
 
 router.post('/', auth, async (req, res) => {
