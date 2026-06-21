@@ -81,14 +81,20 @@ export default function SendPage({ recipients, template, headers, user, onComple
         cid = await createCampaign(user.uid, template, recipients);
         setCampaignId(cid);
       } catch (err) {
-        console.error("Failed to create campaign in DB", err);
+        console.warn("Could not create campaign in DB (non-fatal):", err);
+        // Not fatal — emails will still send, just won't be saved to DB
       }
     }
 
     if (cid) {
-      await updateCampaignStatus(cid, 'sending');
+      try {
+        await updateCampaignStatus(cid, 'sending');
+      } catch (err) {
+        console.warn("Could not update campaign status:", err);
+      }
     }
-    
+
+    // ALWAYS start sending regardless of DB errors
     processNext(cid);
   }, [processNext, campaignId, template, recipients, user.uid]);
 
