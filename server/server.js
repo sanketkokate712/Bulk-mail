@@ -1,7 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const dns = require('dns');
 require('dotenv').config();
+
+// Force IPv4 DNS — Render free tier has no IPv6 outbound support
+dns.setDefaultResultOrder('ipv4first');
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
