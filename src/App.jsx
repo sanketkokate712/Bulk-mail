@@ -56,6 +56,18 @@ export default function App() {
     setUser(userData);
   };
 
+  const handleLogout = async () => {
+    try {
+      const { logout } = await import('./firebase/auth');
+      await logout();
+    } catch (e) {
+      // ignore
+    }
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('authUser');
+    setUser(null);
+  };
+
   const handleNavigate = useCallback((view) => {
     setCurrentView(view);
   }, []);
@@ -91,6 +103,7 @@ export default function App() {
         currentView={currentView}
         onNavigate={handleNavigate}
         user={user}
+        onLogout={handleLogout}
       />
       <main className="main-content">
         <div className="main-scroll">

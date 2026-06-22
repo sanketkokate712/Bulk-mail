@@ -8,7 +8,7 @@ const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: DashboardIcon },
 ];
 
-export default function Sidebar({ currentView, onNavigate, user }) {
+export default function Sidebar({ currentView, onNavigate, user, onLogout }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo" onClick={() => onNavigate('upload')}>
@@ -34,11 +34,16 @@ export default function Sidebar({ currentView, onNavigate, user }) {
 
       {user && (
         <div className="sidebar-user">
-          <div className="user-avatar">{user.name[0]}</div>
-          <div className="user-info">
-            <span className="user-name">{user.name}</span>
-            <span className="user-email">{user.email}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%' }}>
+            <div className="user-avatar">{user.name[0]}</div>
+            <div className="user-info">
+              <span className="user-name">{user.name}</span>
+              <span className="user-email">{user.email}</span>
+            </div>
           </div>
+          <button className="nav-item sign-out-btn" onClick={onLogout} style={{ marginTop: '12px', color: 'var(--red-400)' }}>
+            <span style={{ fontSize: '14px', fontWeight: 500 }}>Sign Out</span>
+          </button>
         </div>
       )}
     </aside>
